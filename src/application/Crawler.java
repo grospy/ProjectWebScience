@@ -9,14 +9,26 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-public class Crawler {
+public class Crawler implements Runnable {
 	
-	private Set<String> crawled = new HashSet<String>();
-	private Graph graph;
+	private static volatile Set<String> crawled = new HashSet<String>();
+	private Graph graph = Graph.getInstance();
+	private ThreadPool threadPool = ThreadPool.getInstance();
+	private String source;
+	private Vertex object;
 	
-	public Crawler(Graph graph) {
-		this.graph = graph;
+	public Crawler(String source) {
+		this.source = source;
 	}
+	
+	public Crawler(String source, Vertex userObj) {
+		this.source = source;
+		this.object = userObj;
+	}
+	
+	public void startPoint(String source) throws IOException {
+		
+	} 
 	
 	public void crawlRestaurant(String source) throws IOException {
 		Document doc = Jsoup.connect(source).get();
@@ -24,24 +36,25 @@ public class Crawler {
 		Elements meta_url = doc.select("meta[property=og:url]");
 		Vertex restaurant = new Vertex(meta_title.attr("content").toString(), meta_url.attr("content").toString(), 0);
 		Elements reviews = doc.select("div[itemprop=review]");
-//		ArrayList<Vertex> n = new ArrayList<Vertex>(10);
 		for (Element oneReview: reviews) {
 			Elements user = oneReview.select("div[class=memberProfile_name fontMedium]");
 			String userLink = "http://www.iens.nl" + user.select("a[href]").first().attr("href").toString();
 			String userName = user.select("span").first().text().toString();
 			Vertex user_new = new Vertex(userName, userLink);
-//			n.add(user_new);
 			Elements allGrades = oneReview.select("ul[class=scoreList small-show]");
 			float avGrade = getAverage(allGrades); 
 			graph.addEdge(restaurant, user_new, avGrade);
+			if (!crawled.contains(user_new.getId())) {
+				threadPool.enqueue(new Crawler(userLink, user_new));
+			} 
 		}
-		crawled.add(restaurant.getId());
+		synchronized (crawled) {
+			crawled.add(restaurant.getId());
+		}
 	}
 	
-	public void crawlUser(String link) throws IOException {
-//	public void crawlUser(Vertex user) throws IOException {
-//		Document doc = Jsoup.connect(user.getLink()).get();
-		Document doc = Jsoup.connect(link).get();
+	public void crawlUser(Vertex user) throws IOException {
+		Document doc = Jsoup.connect(user.getLink()).get();
 		Elements reviews = doc.select("div[itemprop=review]");
 		for (Element oneReview: reviews) {
 			String restaurantLink = "http://www.iens.nl" + oneReview.select("div.memberProfile_name").select("a:eq(1)").attr("href").toString();
@@ -49,9 +62,14 @@ public class Crawler {
 			Vertex restaurant_new = new Vertex(restaurantName, restaurantLink);
 			Elements allGrades = oneReview.select("ul[class=scoreList small-show]");
 			float avGrade = getAverage(allGrades);
-			graph.addEdge(restaurant_new, new Vertex("MISHA", "link"), avGrade);
+			graph.addEdge(restaurant_new, user, avGrade);
+			if (!crawled.contains(restaurant_new.getId())) {
+				threadPool.enqueue(new Crawler(restaurantLink));
+			} 
 		}
-		
+		synchronized (crawled) {
+			crawled.add(user.getId());
+		}
 	}
 	
 	private float getAverage(Elements allGrades) {
@@ -61,6 +79,23 @@ public class Crawler {
 		float av = (grade1 + grade2 + grade3)/ (float) 3;
 		float avGrade = (Math.round(av * 100))/ (float) 100;
 		return avGrade;
+	}
+
+	@Override
+	public void run() {
+		if (source.contains("restaurant")) {
+			try {
+				crawlRestaurant(source);
+			} catch (IOException e) {
+				System.out.println("Error Crawling Restaurant");
+			}
+		} else {
+			try {
+				crawlUser(object);
+			} catch (IOException e) {
+				System.out.println("Error Crawling User Profile");
+			}
+		}
 	}
 
 }

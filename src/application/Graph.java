@@ -5,10 +5,18 @@ import java.util.ArrayList;
 public class Graph {
 	private ArrayList<Vertex> vertices;
 	private ArrayList<Edge> edges;
-
-	public Graph() {
+	private static Graph oneInstance = null;
+	
+	private Graph() {
 		vertices = new ArrayList<>();
 		edges = new ArrayList<>();
+	}
+	
+	public static Graph getInstance(){
+		if (oneInstance == null) {
+			oneInstance = new Graph();
+		}
+		return oneInstance;
 	}
 
 	public void addEdge(Vertex v1, Vertex v2, float cost) {
@@ -16,6 +24,7 @@ public class Graph {
 		if (temp == null) {
 			Edge e = new Edge(v1, v2, cost);
 			edges.add(e);
+			System.out.println("Adding edge" + v1.getName() + " - " + v2.getName() );
 		}
 	}
 
@@ -35,28 +44,6 @@ public class Graph {
 		}
 		return null;
 	}
-
-	// /**
-	// * Sets all states to UNVISITED
-	// */
-	// private void clearStates() {
-	// for (Vertex each : vertices) {
-	// each.state = State.UNVISITED;
-	// }
-	// }
-	//
-	// /**
-	// * Test if DFS or BFS returned a connected graph
-	// *
-	// * @return true if connected, false if not.
-	// */
-	// public boolean isConnected() {
-	// for (Vertex each : vertices) {
-	// if (each.state != State.COMPLETE)
-	// return false;
-	// }
-	// return true;
-	// }
 
 	@Override
 	public String toString() {
