@@ -1,13 +1,18 @@
 package application;
 
+import java.io.IOException;
 import java.util.ArrayList;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
 
 public class Vertex implements Comparable<Vertex> {
 	private String id;
 	private String name;
 	private String link;
 	private boolean restaurant = false;
-	private ArrayList<Vertex> adj;
+	private volatile ArrayList<Vertex> adj;
 
 	public Vertex(String name,String link, int restaurant) {
 		this.id = extractID(link);
@@ -21,6 +26,25 @@ public class Vertex implements Comparable<Vertex> {
 		this.id = extractID(link);
 		this.name = name;
 		this.link = link;
+		this.adj = new ArrayList<>();
+	}
+	
+	public Vertex(String id) throws IOException {
+		this.id = id;
+		Document doc;
+		String source;
+		if (id.length() < 6) {
+			source = "http://www.iens.nl/restaurant/" + id;
+			doc = Jsoup.connect(source).get();
+			this.name = doc.select("meta[property=og:title]").attr("content").toString();
+			this.link = doc.select("meta[property=og:url]").attr("content").toString();
+			this.restaurant = true;
+		} else {
+			source = "http://www.iens.nl/profiel/" + id;
+			doc = Jsoup.connect(source).get();
+			this.name = doc.select("span[itemprop=author]").first().text().toString();
+			this.link = doc.select("meta[property=og:url]").attr("content").toString();
+		}
 		this.adj = new ArrayList<>();
 	}
 
@@ -68,6 +92,10 @@ public class Vertex implements Comparable<Vertex> {
 
 	public String getLink() {
 		return link;
+	}
+	
+	public ArrayList<Vertex> getAdj() {
+		return adj;
 	}
 
 }

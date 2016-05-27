@@ -1,6 +1,7 @@
 package application;
 
 import java.io.IOException;
+
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -13,23 +14,20 @@ public class Main extends Application {
 
     private Stage primaryStage;
     private BorderPane rootLayout;
-    private ThreadPool threadPool = ThreadPool.getInstance();
-//    private boolean started = false;
-    private boolean stopped = false;
 
     @Override
     public void start(Stage primaryStage) {
         this.primaryStage = primaryStage;
-        this.primaryStage.setTitle("WebCrawler");
+        this.primaryStage.setTitle("Web Science");
 
         initRootLayout();
-        showAppGUI();
+        showApplicatonView();
     }
 
     public void initRootLayout() {
         try {
             FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(null);
+            loader.setLocation(Main.class.getResource("view/RootLayout.fxml"));
             rootLayout = (BorderPane) loader.load();
 
             Scene scene = new Scene(rootLayout);
@@ -40,17 +38,13 @@ public class Main extends Application {
         }
     }
 
-    public void showAppGUI() {
+    public void showApplicatonView() {
         try {
             FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(null);
-            AnchorPane app = (AnchorPane) loader.load();
+            loader.setLocation(Main.class.getResource("view/ApplicationView.fxml"));
+            AnchorPane appView = (AnchorPane) loader.load();
 
-            rootLayout.setCenter(app);
-            
-//            AppLayoutController controller = loader.getController();
-//            controller.setMainApp(this);
-            
+            rootLayout.setCenter(appView);            
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -60,20 +54,9 @@ public class Main extends Application {
         return primaryStage;
     }
 
-//    public static void main(String[] args) {
-//        launch(args);
-//    }
-
-	public void startCrawler() {
-
-	}
-
-	public void stopCrawler() {
-		if(!stopped) {
-			threadPool.stop();
-		}
-		stopped = true;
-//		started = false;
-	}
-    
+    public static void main(String[] args) {
+    	String startLink = "http://www.iens.nl/restaurant/24339/amsterdam-le-restaurant";
+		ThreadPool.getInstance().enqueue(new Crawler(startLink));
+        launch(args);
+    }
 }

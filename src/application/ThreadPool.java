@@ -10,7 +10,7 @@ public class ThreadPool {
 
 	private ThreadPool() {
 		tasksQueue = new LinkedList<Runnable>();
-		threads = new WorkerThread[1000]; // Number of worker threads
+		threads = new WorkerThread[40]; // Number of worker threads
 		for (int i = 0; i < threads.length; i++) {
 			threads[i] = new WorkerThread();
 			threads[i].start();
@@ -65,9 +65,9 @@ public class ThreadPool {
 			}
 		}
 		
-	    public synchronized void pleaseStop(){
+	    public synchronized void pleaseStop() {
 	        isStopped = true;
-	        this.interrupt();
+//	        this.interrupt();
 	    }
 	}
 }

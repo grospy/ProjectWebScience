@@ -17,6 +17,11 @@
               <MenuItem mnemonicParsing="false" onAction="#handleExit" text="Close" />
             </items>
           </Menu>
+            <Menu mnemonicParsing="false" text="Data">
+               <items>
+                  <MenuItem mnemonicParsing="false" onAction="#handleSave" text="Save Data" />
+               </items>
+            </Menu>
           <Menu mnemonicParsing="false" text="Help">
             <items>
               <MenuItem mnemonicParsing="false" onAction="#handleAbout" text="About" />

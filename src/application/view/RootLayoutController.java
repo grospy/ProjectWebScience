@@ -1,5 +1,9 @@
 package application.view;
 
+import java.io.IOException;
+
+import application.Graph;
+import application.ThreadPool;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -19,9 +23,14 @@ public class RootLayoutController {
     	alert.setContentText("Application created by:\n"
     						+ "Andrei Frunze (551107) & "
     						+ "Shamil Karimli (523001)\n\n"
-    						+ "Project Wolf Pack");
+    						+ "Project WebScience");
     	alert.showAndWait();
     }
-
-	
+    
+    @FXML
+    private void handleSave() throws IOException {
+    	ThreadPool.getInstance().stop();
+    	Graph.getInstance().toXML();
+    }
+    
 }

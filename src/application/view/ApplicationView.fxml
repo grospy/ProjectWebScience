@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.SplitMenuButton?>
@@ -9,7 +13,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.view.ApplicationViewController">
    <children>
       <AnchorPane prefHeight="300.0" prefWidth="600.0">
          <children>
@@ -17,20 +21,22 @@
                <items>
                   <AnchorPane prefHeight="298.0" prefWidth="346.0">
                      <children>
-                        <Button layoutX="203.0" layoutY="249.0" mnemonicParsing="false" text="Submit" />
-                        <Text layoutX="14.0" layoutY="162.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Category" />
-                        <Text layoutX="14.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Restaurant" />
-                        <TextField layoutX="14.0" layoutY="41.0" />
-                        <SplitMenuButton layoutX="33.0" layoutY="176.0" mnemonicParsing="false" text="Chose Criteria carefully">
-                          <items>
-                            <MenuItem mnemonicParsing="false" text="Action 1" />
-                            <MenuItem mnemonicParsing="false" text="Action 2" />
-                          </items>
-                        </SplitMenuButton>
+                        <Button layoutX="93.0" layoutY="193.0" mnemonicParsing="false" onAction="#serviceSug" prefHeight="25.0" prefWidth="114.0" text="Service" />
+                        <Text layoutX="68.0" layoutY="131.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Get suggestions based on:">
+                           <font>
+                              <Font size="14.0" />
+                           </font></Text>
+                        <Text layoutX="117.0" layoutY="36.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Restaurant">
+                           <font>
+                              <Font size="14.0" />
+                           </font></Text>
+                        <TextField fx:id="root" layoutX="34.0" layoutY="57.0" prefHeight="25.0" prefWidth="231.0" promptText="Please insert restaurant ID" />
+                        <Button layoutX="93.0" layoutY="229.0" mnemonicParsing="false" onAction="#decorSug" prefHeight="25.0" prefWidth="114.0" text="Decor" />
+                        <Button layoutX="93.0" layoutY="156.0" mnemonicParsing="false" onAction="#foodSug" prefHeight="25.0" prefWidth="114.0" text="Food" />
                      </children></AnchorPane>
                   <AnchorPane prefHeight="298.0" prefWidth="268.0">
                      <children>
-                        <TextArea layoutX="23.0" layoutY="62.0" prefHeight="222.0" prefWidth="246.0" />
+                        <TextArea fx:id="suggestions" layoutX="23.0" layoutY="62.0" prefHeight="222.0" prefWidth="246.0" />
                         <Text layoutX="104.0" layoutY="38.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Suggestions :" />
                      </children></AnchorPane>
                </items>
