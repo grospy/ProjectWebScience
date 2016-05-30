@@ -2,6 +2,7 @@ package application.view;
 
 import java.io.IOException;
 
+import application.Crawler;
 import application.Graph;
 import application.ThreadPool;
 import javafx.fxml.FXML;
@@ -29,8 +30,24 @@ public class RootLayoutController {
     
     @FXML
     private void handleSave() throws IOException {
-    	ThreadPool.getInstance().stop();
     	Graph.getInstance().toXML();
+    }
+    
+    @FXML
+    private void handleCrawl() {
+    	String startLink = "http://www.iens.nl/restaurant/24339/amsterdam-le-restaurant";
+		ThreadPool.getInstance().enqueue(new Crawler(startLink));
+    }
+    
+    @FXML
+    private void handleStopCrawl() throws InterruptedException {
+    	ThreadPool.getInstance().stop();
+    	Thread.sleep(5000);
+    }
+    
+    @FXML
+    private void handleTests() {
+    	System.out.println(Graph.getInstance().toString());
     }
     
 }

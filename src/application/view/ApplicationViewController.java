@@ -5,6 +5,7 @@ import application.ThreadPool;
 import application.Vertex;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import application.Graph;
 import javafx.fxml.FXML;
@@ -29,8 +30,9 @@ public class ApplicationViewController {
 	
 	@FXML
 	private void foodSug() {
+		System.out.println("food");
 		ThreadPool.getInstance().stop();
-		ArrayList<Suggestion> suggestion = new ArrayList<Suggestion>();
+		List<Suggestion> suggestion = new ArrayList<Suggestion>();
 		String restaurant = root.getText();
 		Vertex root = g.findVertexLink(restaurant);
 		if (root == null) {
@@ -43,8 +45,9 @@ public class ApplicationViewController {
 	
 	@FXML
 	private void serviceSug() {
+		System.out.println("service");
 		ThreadPool.getInstance().stop();
-		ArrayList<Suggestion> suggestion = new ArrayList<Suggestion>();
+		List<Suggestion> suggestion = new ArrayList<Suggestion>();
 		String restaurant = root.getText();
 		Vertex root = g.findVertexLink(restaurant);
 		if (root == null) {
@@ -57,8 +60,9 @@ public class ApplicationViewController {
 	
 	@FXML
 	private void decorSug() {
+		System.out.println("decor");
 		ThreadPool.getInstance().stop();
-		ArrayList<Suggestion> suggestion = new ArrayList<Suggestion>();
+		List<Suggestion> suggestion = new ArrayList<Suggestion>();
 		String restaurant = root.getText();
 		Vertex root = g.findVertexLink(restaurant);
 		if (root == null) {
@@ -77,10 +81,12 @@ public class ApplicationViewController {
         alert.showAndWait();
 	}
 	
-	private void printSuggestions(ArrayList<Suggestion> list) {
+	private void printSuggestions(List<Suggestion> list) {
 		String toPrint = "";
-		for (Suggestion s: list) {
-			toPrint += s.print();
+		int i = 1;
+		for (Suggestion s: list){
+			toPrint += i + ". " + s.print();
+			i++;
 		}
 		suggestions.setText(toPrint);
 	}

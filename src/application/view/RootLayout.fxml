@@ -8,7 +8,7 @@
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.layout.BorderPane?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="520.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.view.RootLayoutController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="425.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.view.RootLayoutController">
    <top>
       <MenuBar>
         <menus>
@@ -19,6 +19,9 @@
           </Menu>
             <Menu mnemonicParsing="false" text="Data">
                <items>
+                  <MenuItem mnemonicParsing="false" onAction="#handleCrawl" text="Crawl" />
+                  <MenuItem mnemonicParsing="false" onAction="#handleStopCrawl" text="Stop Crawl" />
+                  <MenuItem mnemonicParsing="false" onAction="#handleTests" text="Testing" />
                   <MenuItem mnemonicParsing="false" onAction="#handleSave" text="Save Data" />
                </items>
             </Menu>

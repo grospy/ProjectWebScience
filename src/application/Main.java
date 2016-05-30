@@ -55,8 +55,6 @@ public class Main extends Application {
     }
 
     public static void main(String[] args) {
-    	String startLink = "http://www.iens.nl/restaurant/24339/amsterdam-le-restaurant";
-		ThreadPool.getInstance().enqueue(new Crawler(startLink));
         launch(args);
     }
 }

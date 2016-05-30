@@ -5,7 +5,6 @@ import java.util.ArrayList;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.select.Elements;
 
 public class Vertex implements Comparable<Vertex> {
 	private String id;

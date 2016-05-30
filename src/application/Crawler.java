@@ -42,21 +42,21 @@ public class Crawler implements Runnable {
 		String meta_url = doc.select("meta[property=og:url]").attr("content").toString();
 		Vertex restaurant = new Vertex(meta_title, meta_url, 0);
 		if (doc.select("span[itemprop=addressLocality]").first().text().toString().equals("Amsterdam")) {
-			for (int i = 1; i<2; i++) {
-				String pageLink = source + "#recensies-restaurantNav:perPagina=10&pagina=" + i + "&";
-				
-				java.util.logging.Logger.getLogger("com.gargoylesoftware.htmlunit").setLevel(java.util.logging.Level.OFF);
-			    java.util.logging.Logger.getLogger("org.apache.http").setLevel(java.util.logging.Level.OFF);
-				@SuppressWarnings("resource")
-				final WebClient webClient = new WebClient(BrowserVersion.FIREFOX_45);
-				webClient.getOptions().setCssEnabled(false);
-				webClient.setAjaxController(new NicelyResynchronizingAjaxController());
-				webClient.waitForBackgroundJavaScript(1000);
-				final HtmlPage page = webClient.getPage(pageLink);
-				webClient.waitForBackgroundJavaScriptStartingBefore(1000);
+			for (int i = 1; i<6; i++) {
+//				String pageLink = source + "#recensies-restaurantNav:perPagina=10&pagina=" + i + "&";
+//				
+//				java.util.logging.Logger.getLogger("com.gargoylesoftware.htmlunit").setLevel(java.util.logging.Level.OFF);
+//			    java.util.logging.Logger.getLogger("org.apache.http").setLevel(java.util.logging.Level.OFF);
+//				@SuppressWarnings("resource")
+//				final WebClient webClient = new WebClient(BrowserVersion.FIREFOX_45);
+//				webClient.getOptions().setCssEnabled(false);
+//				webClient.setAjaxController(new NicelyResynchronizingAjaxController());
+//				webClient.waitForBackgroundJavaScript(1000);
+//				final HtmlPage page = webClient.getPage(pageLink);
+//				webClient.waitForBackgroundJavaScriptStartingBefore(1000);
 				
 		        try {
-		            doc = Jsoup.parse(page.asXml());
+//		            doc = Jsoup.parse(page.asXml());
 		            
 		         // Selects all review blocks
 					Elements reviews = doc.select("div[itemprop=review]");
@@ -84,9 +84,7 @@ public class Crawler implements Runnable {
 							}
 							
 						} catch(Exception e) {
-							System.out.println();
 							System.out.println("Ignoring review: Error with a review for " + restaurant.getName());
-							System.out.println();
 						} 
 					}
 					
@@ -100,10 +98,6 @@ public class Crawler implements Runnable {
 		        }
 			}
 		}
-//		System.out.println(graph.edgesToString());
-//		graph.toXML();
-//		EdgeToXML xml = new EdgeToXML(graph);
-//		xml.saveWebsiteDataToFile();
 	}
 	
 	public void crawlUser(Vertex user) throws IOException {
@@ -118,20 +112,28 @@ public class Crawler implements Runnable {
 			String restaurantLink = "http://www.iens.nl" + oneReview.select("div.memberProfile_name").select("a:eq(1)").attr("href").toString();
 			Document localDoc = Jsoup.connect(restaurantLink).get();
 			
-			if (localDoc.select("span[itemprop=addressLocality]").first().text().toString().equals("Amsterdam")) {
-				String restaurantName = oneReview.select("div.memberProfile_name").select("a:eq(1)").first().text();
-				Vertex restaurant_new = new Vertex(restaurantName, restaurantLink);
-				// Selects the grades from a list
-				Elements allGrades = oneReview.select("ul[class=scoreList small-show]");
-				int food = Integer.parseInt(allGrades.select("li:eq(0)").text().replaceAll("[^0-9]", ""));
-				int service = Integer.parseInt(allGrades.select("li:eq(1)").text().replaceAll("[^0-9]", ""));
-				int decor = Integer.parseInt(allGrades.select("li:eq(2)").text().replaceAll("[^0-9]", ""));
-				//Creates an Edge
-				graph.addEdge(user, restaurant_new, food, service, decor);
-				if (!crawled.contains(restaurant_new.getId())) {
-					threadPool.enqueue(new Crawler(restaurantLink));
+			try {
+				if (localDoc.select("span[itemprop=addressLocality]").first().text().toString().equals("Amsterdam")) {
+					String restaurantName = oneReview.select("div.memberProfile_name").select("a:eq(1)").first().text();
+					Vertex restaurant_new = new Vertex(restaurantName, restaurantLink);
+					// Selects the grades from a list
+					Elements allGrades = oneReview.select("ul[class=scoreList small-show]");
+					try {
+						int food = Integer.parseInt(allGrades.select("li:eq(0)").text().replaceAll("[^0-9]", ""));
+						int service = Integer.parseInt(allGrades.select("li:eq(1)").text().replaceAll("[^0-9]", ""));
+						int decor = Integer.parseInt(allGrades.select("li:eq(2)").text().replaceAll("[^0-9]", ""));
+						//Creates an Edge
+						graph.addEdge(user, restaurant_new, food, service, decor);
+					} catch (Exception e){
+						System.out.println("Review without grade or not approved yet");
+					}
+					if (!crawled.contains(restaurant_new.getId())) {
+						threadPool.enqueue(new Crawler(restaurantLink));
+					}
 				}
-			} 
+			} catch (Exception e) {
+				System.out.println("Restaurant Location Undetermined");
+			}
 		}
 		synchronized (crawled) {
 			crawled.add(user.getId());
