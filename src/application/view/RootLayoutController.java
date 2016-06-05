@@ -1,7 +1,5 @@
 package application.view;
 
-import java.io.IOException;
-
 import application.Crawler;
 import application.Graph;
 import application.ThreadPool;
@@ -29,25 +27,39 @@ public class RootLayoutController {
     }
     
     @FXML
-    private void handleSave() throws IOException {
-    	Graph.getInstance().toXML();
+    private void handleSave() {
+//    	System.out.println("Saving vertices and edges to XML files");
+    	Graph.getInstance().save();
+    }
+    
+    @FXML
+    private void handleLoad() {
+    	if (!Graph.getInstance().load()) {
+    		Alert alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Files not found");
+            alert.setContentText("Please make sure the data files are in the right folder");
+            alert.showAndWait();
+    	}
     }
     
     @FXML
     private void handleCrawl() {
-    	String startLink = "http://www.iens.nl/restaurant/24339/amsterdam-le-restaurant";
-		ThreadPool.getInstance().enqueue(new Crawler(startLink));
+    	ThreadPool tp = ThreadPool.getInstance();
+    	if (!tp.isStopped()) {
+    		String link1 = "http://www.iens.nl/restaurant/24339/amsterdam-le-restaurant";
+        	String link2 = "http://www.iens.nl/restaurant/44/amsterdam-il-cavallino";
+    		
+    		tp.enqueue(new Crawler(link1));
+    		tp.enqueue(new Crawler(link2));
+    	}
     }
     
     @FXML
     private void handleStopCrawl() throws InterruptedException {
-    	ThreadPool.getInstance().stop();
-    	Thread.sleep(5000);
+    	ThreadPool tp = ThreadPool.getInstance();
+    	if (!tp.isStopped()) {
+    		tp.stop();
+    	}
     }
-    
-    @FXML
-    private void handleTests() {
-    	System.out.println(Graph.getInstance().toString());
-    }
-    
 }

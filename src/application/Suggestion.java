@@ -44,7 +44,7 @@ public class Suggestion implements Comparable<Suggestion> {
 	}
 	
 	public String print() {
-		String output = "Restaurant: " + this.name + ", with a grade of: " + this.grade + "\n";
+		String output = "Restaurant: " + this.name + " - grade: " + this.grade + "\n";
 		return output;
 	}	
 	

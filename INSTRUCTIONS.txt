@@ -1,0 +1,17 @@
+1.	Launch application
+
+2.	Press Data -> Load Data, if you have the Data files
+
+	[Skip to step 6, if you have the data]
+
+3.	Press Crawler -> Start Crawling, to collect data with the webcrawler
+
+4.	Let the Crawler work for a specific period of time (longer crawling time = more accurate suggestions) 
+
+5.	Press Crawler -> Stop Crawling, to stop the webcrawler
+
+6.	Input the restaurant's ID in the text field [Restaurant IDs: 44, 24339, 33599, 37546]
+
+7.	Press one of the buttons, depending on your interest
+
+8.	Receive the suggestions

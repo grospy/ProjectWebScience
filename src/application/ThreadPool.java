@@ -10,7 +10,7 @@ public class ThreadPool {
 
 	private ThreadPool() {
 		tasksQueue = new LinkedList<Runnable>();
-		threads = new WorkerThread[20]; // Number of worker threads
+		threads = new WorkerThread[10]; // Number of worker threads
 		for (int i = 0; i < threads.length; i++) {
 			threads[i] = new WorkerThread();
 			threads[i].start();
@@ -23,6 +23,10 @@ public class ThreadPool {
 			oneInstance = new ThreadPool();
 		}
 		return oneInstance;
+	}
+	
+	public boolean isStopped() {
+		return this.isStopped;
 	}
 	
 	public void enqueue(Runnable r) {
@@ -40,13 +44,13 @@ public class ThreadPool {
            thread.pleaseStop();
         }
     }
-	
+    
 	public class WorkerThread extends Thread {
 		private boolean isStopped = false;
 		
 		public void run() {
-			Runnable r;
 			while (!isStopped) {
+				Runnable r;
 				synchronized (tasksQueue) {
 					while (tasksQueue.isEmpty()) {
 						try {
@@ -57,7 +61,10 @@ public class ThreadPool {
 					}
 					r = (Runnable) tasksQueue.removeFirst();					
 				}
+				
 				try {
+					long number = 1000 +((long)(Math.random()*(5000-1000)));
+					sleep(number);
 					r.run();
 				} catch (Exception e) {
 					e.printStackTrace();

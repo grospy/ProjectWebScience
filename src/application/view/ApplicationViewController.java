@@ -1,7 +1,6 @@
 package application.view;
 
 import application.Suggestion;
-import application.ThreadPool;
 import application.Vertex;
 
 import java.util.ArrayList;
@@ -16,7 +15,7 @@ import javafx.scene.control.Alert.AlertType;
 
 public class ApplicationViewController {
 
-//    private Main mainApp;
+//	private Main mainApp;
     private Graph g = Graph.getInstance();
     
     @FXML
@@ -30,12 +29,10 @@ public class ApplicationViewController {
 	
 	@FXML
 	private void foodSug() {
-		System.out.println("food");
-		ThreadPool.getInstance().stop();
 		List<Suggestion> suggestion = new ArrayList<Suggestion>();
 		String restaurant = root.getText();
-		Vertex root = g.findVertexLink(restaurant);
-		if (root == null) {
+		Vertex root = Graph.findVertexByID(restaurant);
+		if ((root == null) || (!root.getRestaurant())) {
 			showError();
 		} else {
 			suggestion = g.getSuggestions(root,1);
@@ -45,12 +42,10 @@ public class ApplicationViewController {
 	
 	@FXML
 	private void serviceSug() {
-		System.out.println("service");
-		ThreadPool.getInstance().stop();
 		List<Suggestion> suggestion = new ArrayList<Suggestion>();
 		String restaurant = root.getText();
-		Vertex root = g.findVertexLink(restaurant);
-		if (root == null) {
+		Vertex root = Graph.findVertexByID(restaurant);
+		if ((root == null) || (!root.getRestaurant())) {
 			showError();
 		} else {
 			suggestion = g.getSuggestions(root,2);
@@ -60,12 +55,10 @@ public class ApplicationViewController {
 	
 	@FXML
 	private void decorSug() {
-		System.out.println("decor");
-		ThreadPool.getInstance().stop();
 		List<Suggestion> suggestion = new ArrayList<Suggestion>();
 		String restaurant = root.getText();
-		Vertex root = g.findVertexLink(restaurant);
-		if (root == null) {
+		Vertex root = Graph.findVertexByID(restaurant);
+		if ((root == null) || (!root.getRestaurant())) {
 			showError();
 		} else {
 			suggestion = g.getSuggestions(root,3);
